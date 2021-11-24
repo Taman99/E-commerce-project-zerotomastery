@@ -3,6 +3,7 @@ import './App.css';
 import Homepage from './Pages/HomePage/Homepage.component';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import ShopPage from './Pages/ShopPage/ShopPage.component';
+import Header from './Components/Header/Header.component';
 
 
 
@@ -10,6 +11,7 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>  {/*  Routes must be wrapped between BrowserRouter */}
+      <Header />
         <Switch> {/*  to open only one route with matching path */}
         <Route exact path='/' component={Homepage} />
         <Route path='/shop' component={ShopPage} />    
