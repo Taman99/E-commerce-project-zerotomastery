@@ -6,26 +6,42 @@ import ShopPage from './Pages/ShopPage/ShopPage.component';
 import Header from './Components/Header/Header.component';
 import SignIn_SignUp from './Pages/SignIn-SignUp/SignIn-SignUp.component';
 import { getAuth, onAuthStateChanged } from '@firebase/auth';
+import {onSnapshot} from '@firebase/firestore';
+import { createUserProfileDocumentInFirestore } from './Firebase/Firebase.utils';
 
 
 class App extends React.Component {
 
   constructor() {
     super();
-
     this.state = {
       currentUser: null
     }
-
   }
-
   unsubscribeFromAuth = null
 
   componentDidMount(){
 
-    this.unsubscribeFromAuth = onAuthStateChanged(getAuth(), user => {
-      this.setState({currentUser : user });
-      console.log(user );
+    this.unsubscribeFromAuth = onAuthStateChanged(getAuth(), async userAuth => {
+     
+    if(userAuth){
+      const userRef = await createUserProfileDocumentInFirestore(userAuth);
+      if(userRef){
+        onSnapshot(userRef, snapShot => {
+          
+          this.setState({
+            currentUser: {
+              id : snapShot.id,
+              ...snapShot.data()
+            }
+          })
+        
+        })
+      }
+    }
+    else{
+      this.setState({currentUser : userAuth});
+    }     
     })
   }
 

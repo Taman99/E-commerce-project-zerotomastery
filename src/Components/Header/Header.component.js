@@ -13,6 +13,10 @@ export default function Header({ currentUser }) {
             </Link>
 
             <div className="options">
+                {
+                    currentUser ? <h4>Hi, {currentUser.displayName}</h4>
+                    : null
+                }
                 <Link to="/shop" className="option">
                     Shop
                 </Link>

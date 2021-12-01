@@ -1,6 +1,6 @@
 // import firebase from 'firebase/app';
 // import 'firebase/auth';
-// import 'firebase/firestore';
+import {doc , getFirestore, getDoc, setDoc } from '@firebase/firestore';
 
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { initializeApp } from "firebase/app";
@@ -19,6 +19,36 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
+const db = getFirestore();
+
+export const createUserProfileDocumentInFirestore = async ( userAuth , additionalData ) => {
+    
+    if(! userAuth ) return;
+
+    // CRUD is performed only on documentReference obj, not on snapShotReference obj
+    const userRef = doc(db , `users/${userAuth.uid}`);
+
+    const snapShot = await getDoc(userRef);
+
+    const { displayName , email } = userAuth;
+    const createdAt = new Date();
+
+    if(!snapShot.data()){
+        try {
+            console.log('creating new user')
+            await setDoc(userRef ,  {
+                displayName,
+                email,
+                createdAt,
+                ...additionalData
+            } )
+        } catch (error) {
+            console.log('Error message :' , error.message);
+        }       
+    }
+    return userRef;
+}
+
 // export const auth1 = auth;
 // export const firestore1 = firestore;
 
@@ -34,7 +64,7 @@ const auth = getAuth();
 export const signInWithGoogle = () => {
 signInWithPopup(auth, provider)
   .then((result) => {
-    console.log(6);
+    
     
     // const credential = GoogleAuthProvider.credentialFromResult(result);
     // const token = credential.accessToken;
@@ -43,7 +73,7 @@ signInWithPopup(auth, provider)
     
     // ...
   }).catch((error) => {
-    console.log(7);
+   
     // Handle Errors here.
     const errorCode = error.code;
     const errorMessage = error.message;
