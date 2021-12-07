@@ -6,13 +6,15 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
-import store from './Redux/Store';
-
+import { store, persistor } from './Redux/Store';
+import { PersistGate } from 'redux-persist/integration/react';
 ReactDOM.render(
   <React.StrictMode>
     {/* <BrowserRouter> */}
     <Provider store={store}>
-    <App />
+      <PersistGate persistor={persistor}>
+        <App />
+      </PersistGate>
     </Provider>
     {/* </BrowserRouter> */}
   </React.StrictMode>,

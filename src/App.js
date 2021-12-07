@@ -10,6 +10,10 @@ import { onSnapshot } from '@firebase/firestore';
 import { createUserProfileDocumentInFirestore } from './Firebase/Firebase.utils';
 import { connect } from 'react-redux';
 import { setCurrentUser } from './Redux/User/User.actions';
+import { selectCurrentUser } from './Redux/User/User.selector';
+import { createStructuredSelector } from 'reselect';
+import CheckoutPage from './Pages/CheckoutPage/CheckoutPage.comp';
+import Contact from './Pages/ContactPage/Contact.comp';
 
 class App extends React.Component {
 
@@ -68,6 +72,8 @@ class App extends React.Component {
               render={() => this.props.currentUser ?
                 <Redirect to='/' /> : <SignIn_SignUp />
               } />
+            <Route path='/checkout' component={CheckoutPage} />
+            <Route path='/contact' component={Contact} />
 
             {/*   Route path must match the url path to open resp. component */}
           </Switch>
@@ -77,8 +83,8 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser
+const mapStateToProps = createStructuredSelector ({
+  currentUser: selectCurrentUser
 })
 
 const mapDispatchToProps = dispatch => ({
